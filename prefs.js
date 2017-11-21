@@ -43,8 +43,8 @@ function buildPrefsWidget() {
     });
 
     let treeView = createKeybindingWidget();
-    addKeybinding(treeView.model, settings, "show-menu-keybinding",
-        "Show password menu");
+    addKeybinding(treeView.model, settings, 'show-menu-keybinding',
+        'Show password menu');
 
     let scrolled = new Gtk.ScrolledWindow();
     scrolled.vexpand = true;
@@ -61,10 +61,10 @@ function createKeybindingWidget() {
     let model = new Gtk.ListStore();
 
     model.set_column_types(
-            [GObject.TYPE_STRING, // COLUMN_ID
-             GObject.TYPE_STRING, // COLUMN_DESCRIPTION
-             GObject.TYPE_INT,    // COLUMN_KEY
-             GObject.TYPE_INT]);  // COLUMN_MODS
+        [GObject.TYPE_STRING, // COLUMN_ID
+            GObject.TYPE_STRING, // COLUMN_DESCRIPTION
+            GObject.TYPE_INT,    // COLUMN_KEY
+            GObject.TYPE_INT]);  // COLUMN_MODS
 
     let treeView = new Gtk.TreeView();
     treeView.model = model;
@@ -79,7 +79,7 @@ function createKeybindingWidget() {
     column = new Gtk.TreeViewColumn();
     column.expand = true;
     column.pack_start(renderer, true);
-    column.add_attribute(renderer, "text", COLUMN_DESCRIPTION);
+    column.add_attribute(renderer, 'text', COLUMN_DESCRIPTION);
 
     treeView.append_column(column);
 
@@ -88,39 +88,39 @@ function createKeybindingWidget() {
     renderer.accel_mode = Gtk.CellRendererAccelMode.GTK;
     renderer.editable = true;
 
-    renderer.connect("accel-edited",
-            function (renderer, path, key, mods, hwCode) {
-                let [ok, iter] = model.get_iter_from_string(path);
-                if(!ok)
-                    return;
+    renderer.connect('accel-edited',
+        function(renderer, path, key, mods, hwCode) {
+            let [ok, iter] = model.get_iter_from_string(path);
+            if (!ok)
+                return;
 
-                // Update the UI.
-                model.set(iter, [COLUMN_KEY, COLUMN_MODS], [key, mods]);
+            // Update the UI.
+            model.set(iter, [COLUMN_KEY, COLUMN_MODS], [key, mods]);
 
-                // Update the stored setting.
-                let id = model.get_value(iter, COLUMN_ID);
-                let accelString = Gtk.accelerator_name(key, mods);
-                settings.set_strv(id, [accelString]);
-            });
+            // Update the stored setting.
+            let id = model.get_value(iter, COLUMN_ID);
+            let accelString = Gtk.accelerator_name(key, mods);
+            settings.set_strv(id, [accelString]);
+        });
 
-    renderer.connect("accel-cleared",
-            function (renderer, path) {
-                let [ok, iter] = model.get_iter_from_string(path);
-                if(!ok)
-                    return;
+    renderer.connect('accel-cleared',
+        function(renderer, path) {
+            let [ok, iter] = model.get_iter_from_string(path);
+            if (!ok)
+                return;
 
-                // Update the UI.
-                model.set(iter, [COLUMN_KEY, COLUMN_MODS], [0, 0]);
+            // Update the UI.
+            model.set(iter, [COLUMN_KEY, COLUMN_MODS], [0, 0]);
 
-                // Update the stored setting.
-                let id = model.get_value(iter, COLUMN_ID);
-                settings.set_strv(id, []);
-            });
+            // Update the stored setting.
+            let id = model.get_value(iter, COLUMN_ID);
+            settings.set_strv(id, []);
+        });
 
     column = new Gtk.TreeViewColumn();
     column.pack_end(renderer, false);
-    column.add_attribute(renderer, "accel-key", COLUMN_KEY);
-    column.add_attribute(renderer, "accel-mods", COLUMN_MODS);
+    column.add_attribute(renderer, 'accel-key', COLUMN_KEY);
+    column.add_attribute(renderer, 'accel-mods', COLUMN_MODS);
 
     treeView.append_column(column);
 
@@ -139,6 +139,6 @@ function addKeybinding(model, settings, id, description) {
     // Add a row for the keybinding.
     let row = model.insert(100); // Erm...
     model.set(row,
-            [COLUMN_ID, COLUMN_DESCRIPTION, COLUMN_KEY, COLUMN_MODS],
-            [id,        description,        key,        mods]);
+        [COLUMN_ID, COLUMN_DESCRIPTION, COLUMN_KEY, COLUMN_MODS],
+        [id,        description,        key,        mods]);
 }
